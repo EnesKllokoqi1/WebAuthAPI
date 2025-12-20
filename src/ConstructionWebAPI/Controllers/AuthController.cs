@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿        using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConstructionWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserAuthController : ControllerBase
+    public class AuthController : ControllerBase
     {
 
         [HttpPost("register")] 
@@ -23,5 +23,7 @@ namespace ConstructionWebAPI.Controllers
         {
             return Ok();
         }
+
+        
     }
 }

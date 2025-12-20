@@ -3,18 +3,16 @@
 [Oo]ut/
 [Ll]og/
 
-
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
+#env files
+.env
 
 .vscode/
-
-
 .vs/
-
 
 AppPackages/
 BundleArtifacts/
