@@ -4,9 +4,9 @@ namespace ConstructionWebAPI.Interfaces
 {
     public interface IAuthService
     {
-        Task<User?> RegisterAsync();
-        Task<TokenResponseDTO?> LogInAsync();
-        Task<TokenResponseDTO?> RefreshTokenDto(RefreshTokenRequestDTO request);
+        Task<User?> RegisterAsync(UserRegisterDTO userDTO);
+        Task<TokenResponseDTO?> LogInAsync(UserLoginDTO userLoginDTO);
+        Task<TokenResponseDTO?> RefreshToken(RefreshTokenRequestDTO request);
 
     }
 }

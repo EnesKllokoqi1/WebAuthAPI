@@ -1,5 +1,10 @@
-﻿        using Microsoft.AspNetCore.Http;
+﻿using ConstructionWebAPI.Data;
+using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ConstructionWebAPI.Controllers
 {
@@ -7,21 +12,42 @@ namespace ConstructionWebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        public IAuthService _authService;
+        public AuthController(IAuthService authService) {
+            _authService = authService;
+        }
 
         [HttpPost("register")] 
-        public ActionResult Register()
+        public async Task<ActionResult> Register(UserRegisterDTO userRegisterDTO)
         {
-            return Ok();
+            var user = await _authService.RegisterAsync(userRegisterDTO);
+            if(user is null)
+            {
+                return BadRequest($"User with the email {userRegisterDTO.Email} already exists.");
+            }
+            return Ok(user);
         }
         [HttpPost("login")]
-        public ActionResult LogIn()
+        public async Task<ActionResult> LogIn(UserLoginDTO userLoginDTO)
         {
-            return Ok();
+            var user = await _authService.LogInAsync(userLoginDTO);
+            if(user is null)
+            {
+                return Unauthorized(new { error = "Invalid email or password" });
+            }
+            return Ok(user);
         }
-        [HttpGet("refresh-token")]
-        public ActionResult RefreshToken()
+
+        [Authorize]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult> RefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO)
         {
-            return Ok();
+            var refreshToken = await _authService.RefreshToken(refreshTokenRequestDTO);
+            if (refreshToken is null)
+            {
+                return BadRequest("Invalid refresh token");
+            }
+            return Ok(refreshToken);
         }
 
         

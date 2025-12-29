@@ -5,7 +5,7 @@ namespace ConstructionWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Assignments : ControllerBase
+    public class AssignmentsController : ControllerBase
     {
     }
 }
