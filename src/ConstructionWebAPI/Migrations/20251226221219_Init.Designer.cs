@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConstructionWebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251220214642_Init")]
+    [Migration("20251226221219_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -139,14 +139,16 @@ namespace ConstructionWebAPI.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<string>("RefreshToken")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

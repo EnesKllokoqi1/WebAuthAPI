@@ -1,10 +1,13 @@
 using ConstructionWebAPI.Data;
+using ConstructionWebAPI.Interfaces;
+using ConstructionWebAPI.Services;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
-using DotNetEnv;
+using System.Text.Json.Serialization;
 
 Env.Load(); // <-- REQUIRED and must be here
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +17,12 @@ var connectionString =
 
 // Add services for controllers
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddControllers();
+builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(
+        new JsonStringEnumConverter());
+}); ;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -32,7 +40,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 var app = builder.Build();
-Console.WriteLine(connectionString);
 // Configure pipeline
 if (app.Environment.IsDevelopment())
 {
