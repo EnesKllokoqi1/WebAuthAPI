@@ -7,7 +7,7 @@ namespace ConstructionWebAPI.DTOS
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress(ErrorMessage = "Invalid email address format")]
         [MaxLength(254, ErrorMessage = "Email address cannot exceed 254 characters")] // RFC 5321 limit
-        public  string EmailAddress { get; set; } = null;
+        public  string EmailAddress { get; set; } 
 
 
         [Required(ErrorMessage = "Password is required")]
@@ -15,7 +15,7 @@ namespace ConstructionWebAPI.DTOS
         [MaxLength(100, ErrorMessage = "Password cannot exceed 100 characters")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
             ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")]
-        public  string Password { get; set; } = null;
+        public  string Password { get; set; } 
 
     }
 }

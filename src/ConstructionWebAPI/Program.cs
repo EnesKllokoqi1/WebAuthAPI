@@ -25,6 +25,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 }); ;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -40,6 +41,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    await AdminUserSeeder.RegisterAdmin(serviceProvider);
+}
+
 // Configure pipeline
 if (app.Environment.IsDevelopment())
 {

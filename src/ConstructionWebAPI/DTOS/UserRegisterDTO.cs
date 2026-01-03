@@ -9,7 +9,7 @@ namespace ConstructionWebAPI.DTOS
         [MaxLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
         [MinLength(2, ErrorMessage = "First name must be at least 2 characters")]
         [RegularExpression(@"^[A-Za-zÀ-ÿ\-'\s]+$",
-    ErrorMessage = "First name can only contain letters, hyphens, apostrophes and spaces")]
+        ErrorMessage = "First name can only contain letters, hyphens, apostrophes and spaces")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last name is required")]
@@ -19,6 +19,7 @@ namespace ConstructionWebAPI.DTOS
             ErrorMessage = "Last name can only contain letters, hyphens, apostrophes and spaces")]
         public string LastName { get; set; } = string.Empty;
 
+        
         [Required(ErrorMessage = "Gender is required")]
         public GenderEnum Gender { get; set; }
 

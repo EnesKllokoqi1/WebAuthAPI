@@ -20,6 +20,7 @@ namespace ConstructionWebAPI.Migrations
                     LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Gender = table.Column<string>(type: "varchar(50)", nullable: false),
+                    UserRole = table.Column<string>(type: "varchar(50)", nullable: false),
                     PasswordHash = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     RefreshToken = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)

@@ -37,6 +37,11 @@ namespace ConstructionWebAPI.Data
                 entity.Property(e => e.Gender)
                 .HasConversion(new EnumToStringConverter<GenderEnum>())
                 .HasColumnType("varchar(50)");
+                entity.Property(e => e.UserRole)
+                .HasConversion(new EnumToStringConverter<UserRoleEnum>())
+                .HasColumnType("varchar(50)");
+            
+                
 
                 //Index : 
 
@@ -56,6 +61,7 @@ namespace ConstructionWebAPI.Data
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(50);
                 entity.Property(e=>e.Salary).IsRequired().HasColumnType("decimal(10,2)");
+            
 
                 //Enum Conversion : 
                 entity.Property(e => e.Gender)
