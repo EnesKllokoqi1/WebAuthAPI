@@ -46,10 +46,11 @@ namespace ConstructionWebAPI.Services
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.FirstName),
+                 new(ClaimTypes.Name, user.FirstName),
                  new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                  new(ClaimTypes.Email,user.Email),
                  new(ClaimTypes.Gender,user.Gender.ToString()),
+                 new(ClaimTypes.Role,user.UserRole.ToString()),
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("AppSettings:Token")!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -78,8 +79,7 @@ namespace ConstructionWebAPI.Services
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.Password),
                 Email = userDTO.Email,
                 Gender = userDTO.Gender,
-                RefreshToken = "",
-                RefreshTokenExpiryTime = DateTime.MinValue 
+                UserRole=Enums.UserRoleEnum.User,
             };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -115,6 +115,7 @@ namespace ConstructionWebAPI.Services
             }
             return await CreateTokens(user);
         }
+
     }
 }
 
