@@ -111,7 +111,8 @@ namespace ConstructionWebAPI.Services
             if(user is null) { return null; }
             if (!BCrypt.Net.BCrypt.Verify(userLoginDTO.Password, user.PasswordHash))
             {
-                return null;                                
+
+                return null;                               
             }
             return await CreateTokens(user);
         }

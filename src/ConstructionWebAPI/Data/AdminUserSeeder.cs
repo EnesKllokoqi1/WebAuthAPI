@@ -1,4 +1,4 @@
-﻿using ConstructionWebAPI.Interfaces;
+using ConstructionWebAPI.Interfaces;
 using ConstructionWebAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +10,7 @@ namespace ConstructionWebAPI.Data
         {
             using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
+            
             var Admin = new User
             {
                 FirstName = "Super",
