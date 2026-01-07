@@ -25,16 +25,31 @@ namespace ConstructionWebAPI.Data
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(500);
-               
-                entity.Property(e=>e.RefreshToken).IsRequired().HasMaxLength(500);
-                entity.Property(e => e.RefreshTokenExpiryTime).IsRequired();
+
+                entity.Property(e => e.RefreshToken)
+                      .HasMaxLength(500)
+                      .IsRequired(false);  
+
+                entity.Property(e => e.RefreshTokenExpiryTime)
+                      .IsRequired(false);  
 
                 //Enum Conversion :
                 entity.Property(e => e.Gender)
                 .HasConversion(new EnumToStringConverter<GenderEnum>())
                 .HasColumnType("varchar(50)");
+                entity.Property(e => e.UserRole)
+                .HasConversion(new EnumToStringConverter<UserRoleEnum>())
+                .HasColumnType("varchar(50)");
+            
+                
+
+                //Index : 
+
+                entity.HasIndex(e => e.Email)
+                .IsUnique();
 
                 //Relations : 
+
                 entity.HasMany(e => e.Assignments)
                 .WithOne(e => e.User).HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -46,6 +61,7 @@ namespace ConstructionWebAPI.Data
                 entity.Property(e => e.FirstName).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(50);
                 entity.Property(e=>e.Salary).IsRequired().HasColumnType("decimal(10,2)");
+            
 
                 //Enum Conversion : 
                 entity.Property(e => e.Gender)

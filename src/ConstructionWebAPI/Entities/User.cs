@@ -9,8 +9,9 @@ namespace ConstructionWebAPI.Entities
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public GenderEnum Gender { get; set; }
+        public UserRoleEnum UserRole { get; set; }
         public string PasswordHash { get; set; } = string.Empty;
-        public string RefreshToken { get; set; } = string.Empty;
+        public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public ICollection<Building> Buildings { get; set; } = new List<Building>();
         public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
