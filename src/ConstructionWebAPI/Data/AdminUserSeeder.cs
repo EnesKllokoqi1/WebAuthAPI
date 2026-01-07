@@ -12,7 +12,6 @@ namespace ConstructionWebAPI.Data
            
             using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var authService = scope.ServiceProvider.GetRequiredService <IAuthService>();
             var Admin = new User
             {
                 FirstName = "Super",

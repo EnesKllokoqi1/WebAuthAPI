@@ -18,6 +18,7 @@ var connectionString =
 // Add services for controllers
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(
