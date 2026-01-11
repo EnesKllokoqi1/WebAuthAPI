@@ -67,7 +67,7 @@ namespace ConstructionWebAPI.Controllers
             {
                 return BadRequest("Worker already exists");
             }
-            return Ok(new
+            return Ok(new   
             {
                 Message = "Worker is created",
                 Worker = worker
