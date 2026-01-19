@@ -1,8 +1,10 @@
 ﻿using ConstructionWebAPI.Data;
-using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.DTOS.BuildingDTOS;
+using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 using ConstructionWebAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ConstructionWebAPI.Services
 {
@@ -13,38 +15,64 @@ namespace ConstructionWebAPI.Services
         {
             _dbContext = appDbContext;
         }
-        public async Task<User?> GetUserData(Guid guid)
+        public async Task<UserResponseDTO?> GetUserData(Guid guid)
+        {
+            var user = await _dbContext.Users
+       .Include(u => u.Buildings)
+       .FirstOrDefaultAsync(u => u.Id == guid);
+
+            if (user is null) return null;
+
+            return MapToDto(user);
+        }
+
+        public async Task<List<BuildingResponseDTO>> SeeUsersBuildings(Guid guid)
+        {
+            var buildings = await _dbContext.Buildings
+        .Where(b => b.OwnerId == guid)
+        .Select(b => new BuildingResponseDTO
+        {
+            Id = b.Id,
+            Name = b.Name,
+            Address = b.Address,
+            Price = b.Price,
+            BuildingType = b.BuildingType
+        })
+        .ToListAsync();
+
+    return buildings;
+        }
+
+        public async Task<UserResponseDTO?> UpdateUserData(Guid guid, UserRegisterDTO userRegisterDTO)
         {
             var user = await _dbContext.Users.FindAsync(guid);
-            if (user == null)
-            {
-                return null;
-            }
-            return user;
-        }
+            if (user is null) return null;
 
-        public async Task<List<Building>> SeeUsersBuildings(Guid guid)
-        {
-            var userWithBuildings1 = await _dbContext.Buildings.Where(e => e.OwnerId == guid).ToListAsync();
-            return userWithBuildings1;
-        }
-
-        public async Task<User?> UpdateUserData(Guid guid, UserRegisterDTO userRegisterDTO)
-        {
-            var theUser = await _dbContext.Users.FindAsync(guid);
-            if (theUser is null)
-            {
-                return null;
-            }
-            theUser.FirstName = userRegisterDTO.FirstName;
-            theUser.LastName = userRegisterDTO.LastName;
-            theUser.Gender = userRegisterDTO.Gender;
-            theUser.Email = userRegisterDTO.Email;
-            theUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userRegisterDTO.Password);
+            user.FirstName = userRegisterDTO.FirstName;
+            user.LastName = userRegisterDTO.LastName;
+            user.Gender = userRegisterDTO.Gender;
+            user.Email = userRegisterDTO.Email;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userRegisterDTO.Password);
             await _dbContext.SaveChangesAsync();
-            return theUser;
-
-
+            return MapToDto(user); ;
+        }
+        private static UserResponseDTO MapToDto(User user)
+        {
+            return new UserResponseDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Buildings = user.Buildings.Select(b => new BuildingResponseDTO
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Address = b.Address,
+                    Price = b.Price,
+                    BuildingType = b.BuildingType
+                }).ToList()
+            };
         }
     }
 }

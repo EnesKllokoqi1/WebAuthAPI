@@ -1,5 +1,6 @@
 ﻿using ConstructionWebAPI.Data;
 using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 using ConstructionWebAPI.Interfaces;
 using Microsoft.AspNetCore.Authentication;
