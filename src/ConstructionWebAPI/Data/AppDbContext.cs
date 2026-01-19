@@ -88,11 +88,11 @@ namespace ConstructionWebAPI.Data
 
                 //Relations : 
                 entity.HasOne(e => e.Owner)
-                .WithMany(e => e.Buildings).HasForeignKey(e => e.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(e => e.Buildings).HasForeignKey(e => e.OwnerId).IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasMany(e => e.Assignments).WithOne(e => e.Building)
-                .HasForeignKey(e => e.BuildingId).OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.BuildingId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
             });
             modelBuilder.Entity<Assignment>(entity =>
             {

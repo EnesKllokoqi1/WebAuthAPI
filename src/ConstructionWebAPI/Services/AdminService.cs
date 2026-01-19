@@ -19,7 +19,7 @@ namespace ConstructionWebAPI.Services
             if (check is not null)
             {
                 return null;
-            }
+            }   
             var worker = new Worker
             {
                 FirstName = createWorkerDTO.FirstName,

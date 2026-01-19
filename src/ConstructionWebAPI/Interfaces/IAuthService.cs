@@ -1,4 +1,5 @@
 ﻿using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 namespace ConstructionWebAPI.Interfaces
 {
