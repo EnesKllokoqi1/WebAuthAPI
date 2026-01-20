@@ -1,5 +1,6 @@
 ﻿using ConstructionWebAPI.Data;
 using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.DTOS.BuildingDTOS;
 using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 using ConstructionWebAPI.Interfaces;
@@ -64,15 +65,15 @@ namespace ConstructionWebAPI.Services
                 );
            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
-        public async Task<User?> RegisterAsync(UserRegisterDTO userDTO)
+        public async Task<UserResponseDTO?> RegisterAsync(UserRegisterDTO userDTO)
         {
             var normalizedEmail = userDTO.Email.Trim().ToLower();
             var existingUser = await _dbContext.Users
-           .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+                .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+
             if (existingUser is not null)
-            {
                 return null;
-            }
+
             var user = new User
             {
                 FirstName = userDTO.FirstName,
@@ -80,11 +81,22 @@ namespace ConstructionWebAPI.Services
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.Password),
                 Email = userDTO.Email,
                 Gender = userDTO.Gender,
-                UserRole=Enums.UserRoleEnum.User,
+                UserRole = Enums.UserRoleEnum.User,
             };
+
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
-            return user;
+
+            var response = new UserResponseDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Buildings = [] 
+            };
+
+            return response;
         }
 
         public async Task<TokenResponseDTO> CreateTokens(User user)

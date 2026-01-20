@@ -1,9 +1,11 @@
-﻿using ConstructionWebAPI.DTOS.UserDTOS;
+﻿using ConstructionWebAPI.DTOS.BuildingDTOS;
+using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 using ConstructionWebAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace ConstructionWebAPI.Controllers
 {
@@ -18,7 +20,7 @@ namespace ConstructionWebAPI.Controllers
         }
         [Authorize]
         [HttpGet("get-user-data")]
-        public async Task<ActionResult> GetUserData()
+        public async Task<ActionResult<UserResponseDTO?>> GetUserData()
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
@@ -28,7 +30,7 @@ namespace ConstructionWebAPI.Controllers
         }
         [Authorize]
         [HttpGet("see-users-buildings")]
-        public async Task<ActionResult> SeeUsersBuildings()
+        public async Task<ActionResult<List<BuildingResponseDTO?>>> SeeUsersBuildings()
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
@@ -43,7 +45,7 @@ namespace ConstructionWebAPI.Controllers
 
         [Authorize]
         [HttpPut("update-users-data")]
-        public async Task<ActionResult> UpdateUsersData(UserRegisterDTO userRegisterDTO)
+        public async Task<ActionResult<UserResponseDTO?>> UpdateUsersData(UserRegisterDTO userRegisterDTO)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();

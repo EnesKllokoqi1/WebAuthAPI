@@ -1,7 +1,7 @@
 ﻿using ConstructionWebAPI.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace ConstructionWebAPI.DTOS
+namespace ConstructionWebAPI.DTOS.WorkerDTOS
 {
     public class WorkerDTO
     {
