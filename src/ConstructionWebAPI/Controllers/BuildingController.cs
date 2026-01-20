@@ -41,7 +41,7 @@ namespace ConstructionWebAPI.Controllers
         }
         [Authorize]
         [HttpPost("purchase-building")]
-        public async Task<ActionResult<Building?>> PurchaseBuilding(BuildingDTO buildingDTO)
+        public async Task<ActionResult<BuildingResponseDTO?>> PurchaseBuilding(BuildingDTO buildingDTO)
         {
             var building = await _buildingService.PurchaseBuilding(buildingDTO);
             if (building is null)
@@ -52,7 +52,7 @@ namespace ConstructionWebAPI.Controllers
         }
         [Authorize]
         [HttpPut("update-buildings-data-buildingId/{buildingId:guid}")]
-        public async Task<ActionResult<Building?>> UpdateBuildingData(Guid buildingId,BuildingDTO buildingDTO)
+        public async Task<ActionResult<BuildingResponseDTO?>> UpdateBuildingData(Guid buildingId,BuildingDTO buildingDTO)
         {
             var building = await _buildingService.UpdateBuildingData(buildingId,buildingDTO);
             if (building is null)
@@ -64,7 +64,7 @@ namespace ConstructionWebAPI.Controllers
         }
         [Authorize]
         [HttpPost("connect-user-with-building")]
-        public async Task<ActionResult<Building?>> ConnectUserWithBuilding(UserBuildingConnectionDTO userBuildingConnectionDTO)
+        public async Task<ActionResult<BuildingWithOwnerResponseDTO?>> ConnectUserWithBuilding(UserBuildingConnectionDTO userBuildingConnectionDTO)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();

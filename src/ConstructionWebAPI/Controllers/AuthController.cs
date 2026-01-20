@@ -13,13 +13,13 @@ namespace ConstructionWebAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public IAuthService _authService;
+        private readonly IAuthService _authService;
         public AuthController(IAuthService authService) {
             _authService = authService;
         }
 
         [HttpPost("register")] 
-        public async Task<ActionResult> Register(UserRegisterDTO userRegisterDTO)
+        public async Task<ActionResult<UserResponseDTO>> Register(UserRegisterDTO userRegisterDTO)
         {
             var user = await _authService.RegisterAsync(userRegisterDTO);
             if(user is null)
@@ -29,7 +29,7 @@ namespace ConstructionWebAPI.Controllers
             return Ok(user);
         }
         [HttpPost("login")]
-        public async Task<ActionResult> LogIn(UserLoginDTO userLoginDTO)
+        public async Task<ActionResult<TokenResponseDTO>> LogIn(UserLoginDTO userLoginDTO)
         {
             var user = await _authService.LogInAsync(userLoginDTO);
             if(user is null)
@@ -41,7 +41,7 @@ namespace ConstructionWebAPI.Controllers
 
         [Authorize]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult> RefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO)
+        public async Task<ActionResult<TokenResponseDTO>> RefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO)
         {
             var refreshToken = await _authService.RefreshToken(refreshTokenRequestDTO);
             if (refreshToken is null)
