@@ -22,9 +22,9 @@ namespace ConstructionWebAPI.Controllers
         public async Task<ActionResult<UserResponseDTO>> Register(UserRegisterDTO userRegisterDTO)
         {
             var user = await _authService.RegisterAsync(userRegisterDTO);
-            if(user is null)
+            if(user is null)    
             {
-                return BadRequest($"User with the email {userRegisterDTO.Email} already exists.");
+                return Conflict($"User with the email {userRegisterDTO.Email} already exists.");
             }
             return Ok(user);
         }
@@ -40,6 +40,27 @@ namespace ConstructionWebAPI.Controllers
         }
 
         [Authorize]
+        [HttpPost("log-out")]
+         public async Task<ActionResult> LogOut()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized();
+            }
+            var guid = Guid.Parse(userIdClaim);
+            var user = await _authService.LogOutUser(guid);
+            if (user is false)
+            {
+                return Unauthorized();
+            }
+            return Ok(new
+            {
+                Message="Logged out sucessfuly"
+            });
+        }
+
+       [Authorize]
         [HttpPost("refresh-token")]
         public async Task<ActionResult<TokenResponseDTO>> RefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO)
         {
@@ -50,7 +71,8 @@ namespace ConstructionWebAPI.Controllers
             }
             return Ok(refreshToken);
         }
+       
 
-        
+
     }
 }

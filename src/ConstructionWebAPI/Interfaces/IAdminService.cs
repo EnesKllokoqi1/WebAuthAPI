@@ -3,6 +3,8 @@ using ConstructionWebAPI.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ConstructionWebAPI.Entities;
+using ConstructionWebAPI.DTOS.AssignmentDTOS;
 
 namespace ConstructionWebAPI.Interfaces
 {
@@ -11,6 +13,7 @@ namespace ConstructionWebAPI.Interfaces
         Task<List<WorkerResponseDTO>> GetAllWorkers();
         Task<WorkerResponseDTO?> GetWorkerDataById(Guid guid);
         Task<bool> DeleteWorker(Guid guid);
+        Task<List<AssignmentWithWorkerResponseDTO>> GetAllWorkerAssignments(Guid guid);
         Task<WorkerResponseDTO?> CreateWorker(WorkerDTO createWorkerDTO);
         Task<WorkerResponseDTO?> UpdateWorkerData(Guid guid, WorkerDTO workerDTO);
     }

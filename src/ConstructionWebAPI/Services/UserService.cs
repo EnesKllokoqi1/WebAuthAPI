@@ -1,4 +1,5 @@
 ﻿using ConstructionWebAPI.Data;
+using ConstructionWebAPI.DTOS.AssignmentDTOS;
 using ConstructionWebAPI.DTOS.BuildingDTOS;
 using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
@@ -18,7 +19,6 @@ namespace ConstructionWebAPI.Services
         public async Task<UserResponseDTO?> GetUserData(Guid guid)
         {
             var user = await _dbContext.Users
-       .Include(u => u.Buildings)
        .FirstOrDefaultAsync(u => u.Id == guid);
 
             if (user is null) return null;
@@ -26,17 +26,21 @@ namespace ConstructionWebAPI.Services
             return MapToDto(user);
         }
 
-        public async Task<List<BuildingResponseDTO>> SeeUsersBuildings(Guid guid)
+        public async Task<List<BuildingWithOwnerResponseDTO>> SeeUserBuildings(Guid guid)
         {
             var buildings = await _dbContext.Buildings
+           .AsNoTracking()
+         .Include(b => b.Owner)
         .Where(b => b.OwnerId == guid)
-        .Select(b => new BuildingResponseDTO
+        .Select(b => new BuildingWithOwnerResponseDTO
         {
             Id = b.Id,
             Name = b.Name,
             Address = b.Address,
             Price = b.Price,
-            BuildingType = b.BuildingType
+            BuildingType = b.BuildingType,
+            OwnerId = b.Owner.Id,
+            OwnerEmail = b.Owner.Email
         })
         .ToListAsync();
 
@@ -64,15 +68,38 @@ namespace ConstructionWebAPI.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Buildings = user.Buildings.Select(b => new BuildingResponseDTO
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    Address = b.Address,
-                    Price = b.Price,
-                    BuildingType = b.BuildingType
-                }).ToList()
             };
+        }
+
+        public async Task<List<AssignmentsWithUserResponseDTO>> SeeUserAssignments(Guid guid)
+        {
+            var assignments = await _dbContext.Assignments
+        .AsNoTracking()
+        .Include(a=>a.User)
+       .Where(a => a.UserId== guid)
+       .Select(a => new AssignmentsWithUserResponseDTO
+       {
+           UserId = a.UserId,
+           AssignmentId = a.Id,
+           EmailAddress = a.User.Email,
+           Status = a.Status,
+           CreatedAt = a.CreatedAt,
+           Description = a.Description,
+           StartTime = a.StartTime,
+           Priority = a.Priority,
+           EndTime = a.EndTime,
+       })
+       .ToListAsync();
+            return assignments;
+        }
+
+        public async Task<bool> DeleteAccount(Guid guid)
+        {
+            var user = await _dbContext.Users.FindAsync(guid);
+            if (user == null) return false;
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

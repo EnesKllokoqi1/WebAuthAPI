@@ -47,7 +47,7 @@ namespace ConstructionWebAPI.Controllers
             if (building is null)
             {
                 return Conflict($"Building has already been bought");
-            }
+            }       
             return Ok(building);
         }
         [Authorize]
@@ -69,7 +69,7 @@ namespace ConstructionWebAPI.Controllers
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
             var parsedId = Guid.Parse(userIdClaim);
-            var building = await _buildingService.ConnectUserWithBuilding(userBuildingConnectionDTO.EmailAddress,parsedId,userBuildingConnectionDTO.BuildingId);
+            var building = await _buildingService.ConnectUserWithBuilding(parsedId,userBuildingConnectionDTO);
             if (building is null)
             {
                 return NotFound("User, building, or email address is not found.");

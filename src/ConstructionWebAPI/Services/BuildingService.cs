@@ -15,15 +15,16 @@ namespace ConstructionWebAPI.Services
             _dbContext = dbContext;
         }
 
-        public async Task<BuildingWithOwnerResponseDTO?> ConnectUserWithBuilding(string userEmailAddress, Guid userId, Guid BuildingId)
+        public async Task<BuildingWithOwnerResponseDTO?> ConnectUserWithBuilding(Guid userId, UserBuildingConnectionDTO dto)
         {
+            var normalisedEmail = dto.EmailAddress.Trim().ToLower();
             var user = await _dbContext.Users
-        .FirstOrDefaultAsync(u => u.Id == userId && u.Email == userEmailAddress.ToLower().Trim());
+        .FirstOrDefaultAsync(u => u.Id == userId && u.Email == normalisedEmail);
 
             if (user is null)
                 return null;
 
-            var building = await _dbContext.Buildings.FindAsync(BuildingId);
+            var building = await _dbContext.Buildings.FindAsync(dto.BuildingId);
             if (building is null)
                 return null;
 
