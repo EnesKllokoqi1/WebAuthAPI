@@ -1,5 +1,7 @@
 ﻿using ConstructionWebAPI.Data;
 using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.DTOS.AssignmentDTOS;
+using ConstructionWebAPI.DTOS.BuildingDTOS;
 using ConstructionWebAPI.DTOS.WorkerDTOS;
 using ConstructionWebAPI.Entities;
 using ConstructionWebAPI.Interfaces;
@@ -81,6 +83,28 @@ namespace ConstructionWebAPI.Services
                 Gender = worker.Gender,
                 Salary = worker.Salary
             };
+        }
+
+        public async Task<List<AssignmentWithWorkerResponseDTO>> GetAllWorkerAssignments(Guid guid)
+        {
+            var assignments = await _dbContext.Assignments
+        .AsNoTracking()
+        .Include(a=>a.Worker)
+       .Where(a => a.WorkerId== guid)
+       .Select(a => new AssignmentWithWorkerResponseDTO
+       {
+           WorkerId = a.WorkerId,
+           FullName = $"{a.Worker.FirstName} {a.Worker.LastName}",
+           Status = a.Status,
+           AssignmentId = a.Id,
+           CreatedAt = a.CreatedAt,
+           StartTime = a.StartTime,
+           EndTime = a.EndTime,
+           Description = a.Description,
+           Priority = a.Priority,
+       })
+       .ToListAsync();
+            return assignments;
         }
     }
 }

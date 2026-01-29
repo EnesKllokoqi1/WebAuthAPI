@@ -1,5 +1,6 @@
 ﻿
 using ConstructionWebAPI.DTOS;
+using ConstructionWebAPI.DTOS.AssignmentDTOS;
 using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.DTOS.WorkerDTOS;
 using ConstructionWebAPI.Interfaces;
@@ -33,6 +34,26 @@ namespace ConstructionWebAPI.Controllers
             }
 
             return Ok(admin);
+        }
+        [Authorize]
+        [HttpPost("logout-as-admin")]
+        public async Task<ActionResult<UserResponseDTO>> LogOutAsAdmin()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized();
+            }
+            var guid = Guid.Parse(userIdClaim);
+            var user = await _authService.LogOutUser(guid);
+            if (user is false)
+            {
+                return Unauthorized();
+            }
+            return Ok(new
+            {
+                Message = "Logged out sucessfuly"
+            });
         }
 
         [Authorize(Roles = "Admin")]
@@ -101,7 +122,7 @@ namespace ConstructionWebAPI.Controllers
 
         }
         [Authorize(Roles = "Admin")]
-        [HttpDelete("delete-worker-id/{id:guid}")]
+        [HttpDelete("delete-worker/{id:guid}")]
         public async Task<ActionResult> DeleteWorker(Guid id)
         {
             var worker = await _adminService.DeleteWorker(id);
@@ -110,6 +131,17 @@ namespace ConstructionWebAPI.Controllers
                 return NotFound($"Worker with id : {id} not found");
             }
             return NoContent();
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("get-all-workers-assignments/{id:guid}")]
+        public async Task<ActionResult<List<AssignmentWithWorkerResponseDTO>>> GetAllWorkerAssignments(Guid id)
+        {
+            var assignments = await _adminService.GetAllWorkerAssignments(id);
+            return Ok(new
+            {
+                Message = assignments.Count == 0 ? $"No assignments are connected to worker with Id :{id}" : null,
+                Assignments=assignments
+            });
         }
 
 

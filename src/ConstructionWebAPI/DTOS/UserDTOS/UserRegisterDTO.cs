@@ -8,15 +8,19 @@ namespace ConstructionWebAPI.DTOS.UserDTOS
         [Required(ErrorMessage = "First name is required")]
         [MaxLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
         [MinLength(2, ErrorMessage = "First name must be at least 2 characters")]
-        [RegularExpression(@"^[A-Za-zÀ-ÿ\-'\s]+$",
-        ErrorMessage = "First name can only contain letters, hyphens, apostrophes and spaces")]
+        [RegularExpression(
+        @"^[\p{L}]+([\p{L}\s'\-]*[\p{L}])$",
+        ErrorMessage = "First name can only contain letters, spaces, hyphens, and apostrophes"
+        )]
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last name is required")]
         [MaxLength(50, ErrorMessage = "Last name cannot exceed 50 characters")]
         [MinLength(2, ErrorMessage = "Last name must be at least 2 characters")]
-        [RegularExpression(@"^[A-Za-zÀ-ÿ\-'\s]+$",
-            ErrorMessage = "Last name can only contain letters, hyphens, apostrophes and spaces")]
+        [RegularExpression(
+        @"^[\p{L}]+([\p{L}\s'\-]*[\p{L}])$",
+        ErrorMessage = "Last name can only contain letters, spaces, hyphens, and apostrophes"
+        )]
         public string LastName { get; set; } = string.Empty;
 
         

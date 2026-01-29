@@ -26,14 +26,15 @@ namespace ConstructionWebAPI.Services
             _dbContext = dbContext;
             _configuration = configuration;
         }
-        
-  
+
+
 
         public async Task<TokenResponseDTO?> RefreshToken(RefreshTokenRequestDTO request)
         {
             var userWithRT = await _dbContext.Users.FirstOrDefaultAsync(e => e.RefreshToken == request.RefreshToken);
-            if (userWithRT is null) { 
-                return null; 
+            if (userWithRT is null)
+            {
+                return null;
             }
             if (userWithRT.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
@@ -42,7 +43,7 @@ namespace ConstructionWebAPI.Services
                 return null;
             }
             return await CreateTokens(userWithRT);
-         
+
         }
         public string CreateToken(User user)
         {
@@ -63,7 +64,7 @@ namespace ConstructionWebAPI.Services
                 signingCredentials: creds,
                 expires: DateTime.UtcNow.AddMinutes(45)
                 );
-           return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
         public async Task<UserResponseDTO?> RegisterAsync(UserRegisterDTO userDTO)
         {
@@ -93,35 +94,35 @@ namespace ConstructionWebAPI.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Buildings = [] 
             };
 
             return response;
         }
 
         public async Task<TokenResponseDTO> CreateTokens(User user)
-            {
+        {
             var tokenResponseDto = new TokenResponseDTO
             {
-                AcessToken =  CreateToken(user),
-                RefreshToken =await GenerateRefreshToken(user)
+                AcessToken = CreateToken(user),
+                RefreshToken = await GenerateRefreshToken(user)
             };
             return tokenResponseDto;
-            }
+        }
 
         private async Task<string> GenerateRefreshToken(User user)
         {
-           var refreshToken= Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime= DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _dbContext.SaveChangesAsync();
             return refreshToken;
         }
 
         public async Task<TokenResponseDTO?> LogInAsync(UserLoginDTO userLoginDTO)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.Email == userLoginDTO.EmailAddress);
-            if(user is null) { return null; }
+            var normalisedEmail = userLoginDTO.EmailAddress.Trim().ToLower();
+            var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.Email == normalisedEmail);
+            if (user is null) { return null; }
             if (!BCrypt.Net.BCrypt.Verify(userLoginDTO.Password, user.PasswordHash))
             {
                 return null;
@@ -129,6 +130,19 @@ namespace ConstructionWebAPI.Services
             return await CreateTokens(user);
         }
 
+        public async Task<bool> LogOutUser(Guid guid)
+        {
+            var user = await _dbContext.Users.FindAsync(guid);
+            if (user == null)
+            {
+                return false;
+            }
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
 

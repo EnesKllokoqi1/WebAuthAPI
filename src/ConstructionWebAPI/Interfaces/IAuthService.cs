@@ -7,6 +7,7 @@ namespace ConstructionWebAPI.Interfaces
     {
         Task<UserResponseDTO?> RegisterAsync(UserRegisterDTO userDTO);
         Task<TokenResponseDTO?> LogInAsync(UserLoginDTO userLoginDTO);
+        Task<bool> LogOutUser(Guid guid);
         Task<TokenResponseDTO?> RefreshToken(RefreshTokenRequestDTO request);
 
     }

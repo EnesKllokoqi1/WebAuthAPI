@@ -1,4 +1,5 @@
-﻿using ConstructionWebAPI.DTOS.BuildingDTOS;
+﻿using ConstructionWebAPI.DTOS.AssignmentDTOS;
+using ConstructionWebAPI.DTOS.BuildingDTOS;
 using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 using ConstructionWebAPI.Interfaces;
@@ -26,26 +27,43 @@ namespace ConstructionWebAPI.Controllers
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
             var parsedId = Guid.Parse(userIdClaim);
             var user = await _userService.GetUserData(parsedId);
+            if (user is null)
+            {
+                return NotFound($"User with Id: {parsedId} has not been found");
+            }
             return Ok(user);
         }
         [Authorize]
-        [HttpGet("see-users-buildings")]
-        public async Task<ActionResult<List<BuildingResponseDTO?>>> SeeUsersBuildings()
+        [HttpGet("see-user-buildings")]
+        public async Task<ActionResult<List<BuildingWithOwnerResponseDTO>>> SeeUserBuildings()
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
              var parsedId = Guid.Parse(userIdClaim);
-            var buildings = await _userService.SeeUsersBuildings(parsedId);
+            var buildings = await _userService.SeeUserBuildings(parsedId);
             return Ok(new
             {
                 message = buildings.Count == 0 ? "No buildings are yet to be created for the user " : null,
                 data = buildings
             });
         }
-
         [Authorize]
-        [HttpPut("update-users-data")]
-        public async Task<ActionResult<UserResponseDTO?>> UpdateUsersData(UserRegisterDTO userRegisterDTO)
+        [HttpGet("see-user-assignments")]
+        public async Task<ActionResult<List<AssignmentsWithUserResponseDTO>>> SeeUserAssignments()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
+            var parsedId = Guid.Parse(userIdClaim);
+            var assignments = await _userService.SeeUserAssignments(parsedId);
+            return Ok(new
+            {
+                message = assignments.Count == 0 ? "No assignments are yet to be created for the user " : null,
+                data = assignments
+            });
+        }
+        [Authorize]
+        [HttpPut("update-user-data")]
+        public async Task<ActionResult<UserResponseDTO?>> UpdateUserData(UserRegisterDTO userRegisterDTO)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
@@ -53,9 +71,23 @@ namespace ConstructionWebAPI.Controllers
             var userdata = await _userService.UpdateUserData(parsedId,userRegisterDTO);
             if (userdata is null)
             {
-                return NotFound($"User with ID: {parsedId} has not been found");
+                return NotFound($"User with Id: {parsedId} has not been found");
             }
             return Ok(userdata);
+        }
+        [Authorize]
+        [HttpDelete("delete-user-account")]
+        public async Task<ActionResult<UserResponseDTO?>> DeleteUserAccount()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
+            var parsedId = Guid.Parse(userIdClaim);
+            var userdata = await _userService.DeleteAccount(parsedId);
+            if (userdata is false)
+            {
+                return NotFound($"User with Id: {parsedId} has not been found");
+            }
+            return NoContent();
         }
     }
 }

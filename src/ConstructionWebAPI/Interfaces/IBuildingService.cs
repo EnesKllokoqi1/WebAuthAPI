@@ -9,6 +9,6 @@ namespace ConstructionWebAPI.Interfaces
         Task<IEnumerable<string>> GetAllBuildingTypes();
         Task<bool> DeleteBuilding(Guid guid);
         Task<BuildingResponseDTO?> UpdateBuildingData(Guid buildingId,BuildingDTO buildingDTO);
-        Task<BuildingWithOwnerResponseDTO?> ConnectUserWithBuilding(string userEmailAddress,Guid userId,Guid BuildingId);
+        Task<BuildingWithOwnerResponseDTO?> ConnectUserWithBuilding(Guid userId, UserBuildingConnectionDTO dto);
     }
 }

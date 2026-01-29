@@ -114,6 +114,11 @@ namespace ConstructionWebAPI.Data
              HasConversion(new EnumToStringConverter<PriorityEnum>())
              .HasColumnType("varchar(50)");
 
+                entity.Property(e => e.UserId).IsRequired(false);
+                entity.Property(e => e.WorkerId).IsRequired(false);
+                entity.Property(e => e.BuildingId).IsRequired(false);
+
+
             });
 
         }

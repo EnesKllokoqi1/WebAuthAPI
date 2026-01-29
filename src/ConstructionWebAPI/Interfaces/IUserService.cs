@@ -1,4 +1,5 @@
-﻿using ConstructionWebAPI.DTOS.BuildingDTOS;
+﻿using ConstructionWebAPI.DTOS.AssignmentDTOS;
+using ConstructionWebAPI.DTOS.BuildingDTOS;
 using ConstructionWebAPI.DTOS.UserDTOS;
 using ConstructionWebAPI.Entities;
 
@@ -8,6 +9,8 @@ namespace ConstructionWebAPI.Interfaces
     {
         Task<UserResponseDTO?> GetUserData(Guid guid);
         Task<UserResponseDTO?> UpdateUserData(Guid guid,UserRegisterDTO userRegisterDTO);
-        Task<List<BuildingResponseDTO>> SeeUsersBuildings(Guid guid);
+        Task<bool> DeleteAccount(Guid guid);
+        Task<List<BuildingWithOwnerResponseDTO>> SeeUserBuildings(Guid guid);
+        Task<List<AssignmentsWithUserResponseDTO>> SeeUserAssignments(Guid guid);
     }
 }
