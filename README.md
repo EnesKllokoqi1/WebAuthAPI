@@ -1,7 +1,7 @@
 # WebAuthAPI: Construction & Assignment Management
 
 This project is a functional, detailed ASP.NET Core Web API designed to manage the practical workflows of a construction business.  
-It focuses on property acquisition, workforce management, and a centralized assignment system, all built using PostgreSQL C# and modern development patterns.
+It focuses on property acquisition, workforce management, and a centralized assignment system, all built using PostgreSQL,C# and modern development patterns.
 
 ---
 
@@ -25,7 +25,7 @@ It is designed to handle the real-world complexity of connecting three distinct 
 
 ### Assignment Logic
 
-When an assignment is created, it is not initially connected to any User, Building, or Worker.The system programmatically links the User, Building  and the Worker using the required authenticated endpoints for connecting them. This allows for a clear audit trail of who is working where, which property is being serviced, and who is responsible for the assignment.
+When an assignment is created, it is not initially connected to any User, Building, or Worker.The system programmatically links the User, Building and the Worker using the required authenticated endpoints for connecting them. This allows for a clear audit trail of who is working where, which property is being serviced, and who is responsible for the assignment.
 
 To Start, Complete, Confirm, Reject, Cancel assignments the assignment must be connected to a User, Worker and Building after Creation.
 
@@ -49,7 +49,7 @@ POST /api/assignments/create-assignment
 }
 ```
 StartTime and EndTime are null because we start and finish assignments on different
-endpoints and we cant create duplicate assignments.
+endpoints and we can't create  duplicate assignments.
 
 ---
 
@@ -120,11 +120,11 @@ The project follows a standard Separation of Concerns approach.
 1. Run the project
 2. Navigate to:
 
-https://localhost:{PORT}/scalar/v1
+`https://localhost:{PORT}/scalar/v1`
 
 or 
 
-https://localhost:{PORT}/scalar
+`https://localhost:{PORT}/scalar`
 
 ---
 
@@ -146,10 +146,10 @@ Or create a ```.env``` file with a PostgreSQL database connection string variabl
 dotnet ef database update
 ```
 
-### 5. Launch the Application
+### 4. Launch the Application
 
 Run the project via Visual Studio or use the command:
 
-```Bash
+```bash
 dotnet run
 ```
